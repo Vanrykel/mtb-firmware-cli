@@ -43,7 +43,20 @@ make program
 De nieuwste firmware is beschikbaar onder:
  🔗 **[GitHub Releases](https://github.com/Vanrykel/mtb-firmware-ci/releases)**
 
-## **🔧 Issues & Bijdragen**
+  ### **Release handmatig maken**
 
-- Problemen? Open een issue!
-- Wil je bijdragen? Fork de repo en maak een pull request.
+  Wil je een nieuwe release maken?
+
+  1. **Plaats de `.deb` file in de `artifacts/` map in de repo.**
+  2. **Push een nieuwe tag om een release te triggeren:**
+     ```bash
+     git tag -f latest
+     git push origin latest --force
+     ```
+  3. **GitHub Actions voegt automatisch de firmware en `.deb` installer toe aan de "latest" release.**
+  4. **Download alles onder Releases.**
+
+  ## **🛠 Issues & Bijdragen**
+
+  - Problemen? Open een issue!
+  - Wil je bijdragen? Fork de repo en maak een pull request.
