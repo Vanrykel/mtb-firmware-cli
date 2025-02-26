@@ -14,9 +14,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up ModusToolbox 3.4
+      - name: Download ModusToolbox from GitHub Releases
         run: |
-          wget -q https://softwaretoolshosting.infineon.com/packages/com.ifx.tb.tool.modustoolboxsetup/versions/1.2.0.787/artifacts/ModusToolboxSetupInstaller_1.2.0.787_linux_x64.deb/download -O modustoolbox.deb
+          wget -q https://github.com/Vanrykel/mtb-firmware-cli/releases/download/v1.2.0.787/ModusToolbox_1.2.0.787.deb -O modustoolbox.deb
+
+      - name: Install ModusToolbox
+        run: |
           sudo dpkg -i modustoolbox.deb || sudo apt-get -f install -y
 
       - name: Set environment variables

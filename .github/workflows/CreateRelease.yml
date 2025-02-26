@@ -1,31 +1,47 @@
-name: Create Release
+name: Release Firmware and ModusToolbox Installer
 
 on:
-  workflow_run:
-    workflows: ["Build Firmware"]
-    types:
-      - completed
+  push:
+    tags:
+      - latest
 
 jobs:
   release:
+    name: Create GitHub Release
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
-      - name: Download built firmware
-        uses: actions/download-artifact@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Build firmware
+        run: |
+          make build
+
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
         with:
           name: firmware
-          path: firmware/
+          path: build/output.hex
+
+      - name: Upload ModusToolbox installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: modus_toolbox_installer
+          path: artifacts/ModusToolboxSetupInstaller.deb
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.${{ github.run_number }}
-          name: Release v1.0.${{ github.run_number }}
-          body: |
-            Automatisch gegenereerde firmware voor ModusToolbox 3.4.
-          files: firmware/*.hex
+          tag_name: latest
+          name: "Latest Firmware & Installer"
           draft: false
           prerelease: false
+          files: |
+            build/output.hex
+            artifacts/ModusToolboxSetupInstaller.deb
