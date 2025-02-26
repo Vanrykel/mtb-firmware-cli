@@ -1,0 +1,43 @@
+name: Build Firmware
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up ModusToolbox 3.4
+        run: |
+          wget -q https://github.com/Infineon/modustoolbox/releases/download/v3.4.0/mtb-linux-install.sh
+          chmod +x mtb-linux-install.sh
+          ./mtb-linux-install.sh --quiet --accept
+
+      - name: Set environment variables
+        run: echo "PATH=$HOME/ModusToolbox/tools_3.4:$PATH" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y cmake ninja-build gcc-arm-none-eabi
+
+      - name: Get PSoC6 libraries
+        working-directory: Firmware/BlinkLED
+        run: make getlibs
+
+      - name: Build firmware
+        working-directory: Firmware/BlinkLED
+        run: make build
+
+      - name: Upload compiled firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: Firmware/BlinkLED/build/*.hex

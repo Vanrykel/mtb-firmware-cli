@@ -1,0 +1,31 @@
+name: Create Release
+
+on:
+  workflow_run:
+    workflows: ["Build Firmware"]
+    types:
+      - completed
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download built firmware
+        uses: actions/download-artifact@v4
+        with:
+          name: firmware
+          path: firmware/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: Release v1.0.${{ github.run_number }}
+          body: |
+            Automatisch gegenereerde firmware voor ModusToolbox 3.4.
+          files: firmware/*.hex
+          draft: false
+          prerelease: false
