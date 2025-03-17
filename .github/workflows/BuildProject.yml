@@ -5,6 +5,7 @@ on:
     branches:
       - main
   pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -19,12 +20,19 @@ jobs:
           sudo dpkg -i /artifacts/ModusToolboxSetup.deb || sudo apt-get -f install -y
 
       - name: Set environment variables
-        run: echo "PATH=$HOME/ModusToolbox/tools_3.4:$PATH" >> $GITHUB_ENV
+        run: |
+          echo "PATH=$HOME/ModusToolbox/tools_3.4:$PATH" >> $GITHUB_ENV
+          echo "CY_TOOLS_PATHS=$HOME/ModusToolbox/tools_3.4" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: |
           sudo apt update
           sudo apt install -y cmake ninja-build gcc-arm-none-eabi
+
+      - name: Debug environment
+        run: |
+          echo "PATH: $PATH"
+          echo "CY_TOOLS_PATHS: $CY_TOOLS_PATHS"
 
       - name: Get PSoC6 libraries
         working-directory: Firmware/BlinkLED
