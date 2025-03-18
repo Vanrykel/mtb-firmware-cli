@@ -17,8 +17,8 @@ jobs:
 
       - name: Install ModusToolbox
         run: |
-          Start-Process -Wait -FilePath .\Artifacts\ModusToolboxSetup.exe -ArgumentList "/S"
-          echo "PATH=$modusPath;$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          Start-Process -Wait -FilePath .\Artifacts\ModusToolboxSetup.exe -ArgumentList "/S" -NoNewWindow -PassThru
+          Write-Output "ModusToolbox installation complete"
 
       - name: Install dependencies
         run: |
